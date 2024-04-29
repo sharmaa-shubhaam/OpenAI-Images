@@ -1,35 +1,35 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { Suspense } from "react";
+import { Route, Routes } from "react-router-dom";
+import { useAppSelector } from "./redux/hooks";
+import { modals } from "./redux/reducers/modal";
+import { userSession } from "./redux/reducers/user_session";
 
-function App() {
-  const [count, setCount] = useState(0)
+// React Lazy loading......
+const GernateImagePrompt = React.lazy(() => import("./@modal/GernateImagePrompt"));
+const SignIn = React.lazy(() => import("./pages/SignIn"));
+const SignUp = React.lazy(() => import("./pages/SignUp"));
+const OpenAI = React.lazy(() => import("./pages/OpenAI"));
 
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+// Main APP.
+export default function App(): React.JSX.Element {
+    const modal = useAppSelector(modals);
+    const app = useAppSelector(userSession);
+
+    return (
+        <>
+            <Routes>
+                {app.session ? (
+                    <Route path="/" element={<Suspense children={<OpenAI _id={app._id} />} />} />
+                ) : (
+                    <>
+                        <Route path="/" element={<Suspense children={<SignIn />} />} />
+                        <Route path="/signup" element={<Suspense children={<SignUp />} />} />
+                    </>
+                )}
+            </Routes>
+            {app.session && modal.gernateImagePrompt && (
+                <Suspense children={<GernateImagePrompt _id={app._id} />} />
+            )}
+        </>
+    );
 }
-
-export default App

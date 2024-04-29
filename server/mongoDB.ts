@@ -1,36 +1,34 @@
 import mongoose from "mongoose";
-import { exit } from "node:process";
 
-// Constant Variable.
-const url: string = process.env.MONGODB_URL || "";
+const connectionString: string | undefined = process.env.MONGODB_URL;
 
-// connecting MongoDB.
+if (!connectionString) {
+    throw new Error("Please provide a connection string.");
+}
+
 const MongoDB = {
-   open: async () => {
-      try {
-         await mongoose.connect(url);
-         console.log("MongoDB Connected....");
-      } catch (error) {
-         console.log("MongoDB Not Connected....");
-         console.log(error);
-      }
-   },
-   close: async () => {
-      try {
-         await mongoose.connection.close();
-         console.log("DisConnected.....");
-      } catch (error) {
-         console.log("MongoDB Not DisConnected....");
-         exit(0);
-      }
-   },
-};
+    open: async () => {
+        // if (mongoose.connection.readyState >= 1) {
+        //     console.log("-------Already connected to database---------");
+        //     return;
+        // }
 
-mongoose.connection.on("open", () => console.log("open"));
-mongoose.connection.on("connected", () => console.log("connected"));
-mongoose.connection.on("close", () => console.log("close"));
-mongoose.connection.on("disconnected", () => console.log("disconnected"));
-mongoose.connection.on("reconnected", () => console.log("reconnected"));
-mongoose.connection.on("disconnecting", () => console.log("disconnecting"));
+        try {
+            await mongoose.connect(connectionString);
+            console.log("------Database connected------");
+        } catch (error) {
+            console.error("------Error while connecting database------");
+            console.log(error);
+        }
+    },
+    close: async () => {
+        try {
+            await mongoose.connection.close();
+            console.log("------Database disconnected-----");
+        } catch (error) {
+            console.error("------Error while disconnecting database------");
+        }
+    },
+};
 
 export default MongoDB;
