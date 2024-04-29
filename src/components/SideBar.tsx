@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { useAppDispatch } from "./../redux/hooks";
 import { isModalOpen } from "../redux/reducers/modal";
 import { deleteSession } from "../redux/reducers/user_session";
+import { fetchPictures } from "../redux/reducers/picture";
 
 export default function SideBar(): React.JSX.Element {
     const dispatch = useAppDispatch();
@@ -28,7 +29,10 @@ export default function SideBar(): React.JSX.Element {
             <div className="px-4">
                 <button
                     className="w-full bg-blue-500 rounded py-2.5 text-white text-sm uppercase tracking-wide active:bg-blue-500/95"
-                    onClick={() => dispatch(isModalOpen({ gernateImagePrompt: true }))}
+                    onClick={() => {
+                        dispatch(isModalOpen({ gernateImagePrompt: true }));
+                        dispatch(fetchPictures(""));
+                    }}
                 >
                     Gernate new image
                 </button>

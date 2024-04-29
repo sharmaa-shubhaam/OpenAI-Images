@@ -10,6 +10,7 @@ interface Picture {
 
 export const fetchPictures = createAsyncThunk("pictures", async (_id: string) => {
     try {
+        if (_id === "") return [];
         const response = await axios({
             method: "GET",
             withCredentials: true,

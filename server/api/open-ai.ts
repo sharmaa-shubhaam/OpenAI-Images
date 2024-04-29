@@ -61,16 +61,20 @@ route.post("/openai-gernate-images", async (req: Request, res: Response) => {
             return res.status(200).send("ok");
         }
 
-        await Picture.updateOne({
-            ref_id: _id,
-            $push: {
-                pictures: {
-                    description: description,
-                    size: size,
-                    url: dataURL,
-                },
+        await Picture.updateOne(
+            {
+                ref_id: _id,
             },
-        });
+            {
+                $push: {
+                    pictures: {
+                        description: description,
+                        size: size,
+                        url: dataURL,
+                    },
+                },
+            }
+        );
         return res.status(200).send("updated");
     } catch (error: any) {
         console.log(`Debug >>>>>> ${error}`);
