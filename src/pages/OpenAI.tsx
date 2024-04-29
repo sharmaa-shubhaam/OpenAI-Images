@@ -5,7 +5,7 @@ import { picture, fetchPictures } from "../redux/reducers/picture";
 
 export default function OpenAI({ _id }: { _id: string }): React.JSX.Element {
     const dispatch = useAppDispatch();
-    const pictures = useAppSelector(picture);
+    const pictures = useAppSelector(picture) || [];
 
     useEffect(() => {
         dispatch(fetchPictures(_id));
